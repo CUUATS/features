@@ -1,0 +1,29 @@
+{
+  "name": "@cuuats/features",
+  "version": "0.1.0",
+  "description": "REST API for PostGIS",
+  "main": "src/index.js",
+  "scripts": {
+    "token": "node src/token.js",
+    "start": "npx nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "PostGIS",
+    "REST",
+    "API"
+  ],
+  "author": "Matt Yoder",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
+    "pg": "^7.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0"
+  }
+}
