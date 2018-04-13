@@ -78,7 +78,7 @@ class Features {
         audience: auth.audience,
         issuer: auth.issuer
       }, (err, decoded) => {
-        (err) ? reject(err) : resolve(decoded.sub === username)
+        (err) ? reject(err.message) : resolve(decoded.sub === username)
       })
     })
   }
@@ -87,7 +87,12 @@ class Features {
     const userConfig = this.config.users[name]
     if (!userConfig) return res.status(404).json({error: 'invalid user'})
 
-    let authorized = await this.isAuthorized(req, name, userConfig.auth)
+    let authorized = false
+    try {
+      authorized = await this.isAuthorized(req, name, userConfig.auth)
+    } catch(e) {
+      console.error(e)
+    }
     if (!authorized) return res.status(403).json({error: 'invalid token'})
 
     req.user = this.users[name]
