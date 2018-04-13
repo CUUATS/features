@@ -4,8 +4,9 @@
   "description": "REST API for PostGIS",
   "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
     "token": "node src/token.js",
-    "start": "npx nodemon src/index.js",
+    "watch": "npx nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
