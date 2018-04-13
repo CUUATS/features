@@ -66,6 +66,8 @@ class Features {
     if (headers && headers.authorization) {
       let parts = headers.authorization.split(' ')
       if (parts.length === 2 && parts[0] == 'Bearer') token = parts[1]
+    } else if (req.query && req.query.token) {
+      token = req.query.token
     }
 
     if (!token) return Promise.resolve(false)
