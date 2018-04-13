@@ -26,7 +26,7 @@ async function getToken() {
   let duration = parseInt(process.argv[3] || '86400') // 24 hours
   let configFile = await promisify(fs.readFile)(
     process.argv[4] || 'config.json')
-  let config = JSON.parse(configFile)
+  let config = JSON.parse(configFile).users[user].auth
   let token = await generateToken(user, duration, config)
   console.log(token)
 }
