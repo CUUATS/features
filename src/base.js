@@ -6,6 +6,10 @@ class BaseUser {
     this.name = name
   }
 
+  badRequest(res, msg) {
+    res.status(400).json({error: msg})
+  }
+
   forbidden(res) {
     res.status(403).json({error: 'forbidden'})
   }

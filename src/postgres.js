@@ -26,10 +26,14 @@ class PostgresUser extends BaseUser {
     try {
       dbRes = await this.pool.query(sql, params)
     } catch (e) {
-      console.log(e)
-      if (/permission denied/.test(e)) {
+      let err = e.toString()
+      console.error(err)
+      if (/permission denied/.test(err)) {
         this.forbidden(res)
-      } else if (/does not exist/.test(e)) {
+      } else if (/column ".*" of relation ".*" does not exist/.test(err)) {
+        let matches = err.match(/column "(.*)" of relation/)
+        this.badRequest(res, 'column "' + matches[1] + '" does not exist')
+      } else if (/relation ".*" does not exist/.test(err)) {
         this.doesNotExist(res)
       } else {
         this.serverError(res)
