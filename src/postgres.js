@@ -200,7 +200,7 @@ class PostgresUser extends BaseUser {
 
   async getTable(req, res) {
     let info = req.tableInfo
-    if (!info.select) return this.forbiddend(res)
+    if (!info.select) return this.forbidden(res)
     let sql = `SELECT *, ST_AsGeoJSON(ST_Transform(${info.geom}, 4326)) ` +
         `AS ${info.geom} FROM {table}`
     return this.query(req, res, sql, undefined, true)
@@ -229,4 +229,3 @@ class PostgresUser extends BaseUser {
 }
 
 module.exports = PostgresUser
-
