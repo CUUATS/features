@@ -45,7 +45,8 @@ class PostgresUser extends BaseUser {
       res.json({rows: dbRes.rowCount})
     } else if (dbRes.command === 'SELECT') {
       let info = await this.getTableInfo(req)
-      let features = dbRes.rows.map((row) => this.rowToFeature(row, info.geom))
+      let features = dbRes.rows.map((row) =>
+        this.rowToFeature(row, info.pk, info.geom))
       if (collection) {
         res.json({
           type: 'FeatureCollection',
@@ -129,10 +130,15 @@ class PostgresUser extends BaseUser {
     return info
   }
 
-  rowToFeature(row, geom) {
+  rowToFeature(row, pk, geom) {
     let feature = {
       type: 'Feature',
       properties: {...row}
+    }
+
+    if (pk in row) {
+      feature.id = row[pk]
+      delete feature.properties[pk]
     }
 
     if (geom) {
