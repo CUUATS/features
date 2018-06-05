@@ -65,14 +65,17 @@ class PostgresUser extends BaseUser {
     let tableParts = req.table.split('.', 2)
     tableParts.reverse()
 
+    let pk = this.options.defaultPk || 'id'
+    let geom = this.options.defaultGeom || 'geom'
+
     info = {
       created: false,
-      geom: this.options.defaultGeom || 'geom',
+      geom: null,
       insert: false,
       ip: false,
       name: req.table,
       modified: false,
-      pk: this.options.defaultPk || 'id',
+      pk: null,
       schema: tableParts[1] || 'public',
       select: false,
       srid: this.options.defaultSrid || null,
@@ -109,6 +112,10 @@ class PostgresUser extends BaseUser {
       } else if (row.column_name === '_ip' &&
                  /character varying/.test(row.data_type)) {
 	      info.ip = true
+      } else if (row.column_name === pk) {
+        info.pk = pk
+      } else if (row.column_name === geom) {
+        info.geom = geom
       }
     })
 
@@ -136,7 +143,7 @@ class PostgresUser extends BaseUser {
       properties: {...row}
     }
 
-    if (pk in row) {
+    if (pk) {
       feature.id = row[pk]
       delete feature.properties[pk]
     }
@@ -207,8 +214,10 @@ class PostgresUser extends BaseUser {
   async getTable(req, res) {
     let info = req.tableInfo
     if (!info.select) return this.forbidden(res)
-    let sql = `SELECT *, ST_AsGeoJSON(ST_Transform(${info.geom}, 4326)) ` +
-        `AS ${info.geom} FROM {table}`
+    let sql = 'SELECT *'
+    if (info.geom)
+      sql += `, ST_AsGeoJSON(ST_Transform(${info.geom}, 4326)) AS ${info.geom}`
+    sql += ' FROM {table}'
     return this.query(req, res, sql, undefined, true)
   }
 
