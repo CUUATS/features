@@ -115,6 +115,10 @@ class Features {
 
   userMiddleware(req, res, next) {
     req.user.middleware(req, res, next)
+    if (req.query.filename) {
+      let filename = req.query.filename.replace(/[^0-9a-zA-Z-_\.]/g, '')
+      res.set('Content-Disposition', `attachment; filename=${filename}.json`)
+    }
   }
 }
 
